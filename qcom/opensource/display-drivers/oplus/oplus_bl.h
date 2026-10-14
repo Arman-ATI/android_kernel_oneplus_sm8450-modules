@@ -516,4 +516,6 @@ int oplus_panel_pwm_switch_backlight(struct dsi_panel *panel, u32 bl_lvl);
 int oplus_panel_pwm_switch_timing_switch(struct dsi_panel *panel);
 int oplus_panel_pwm_switch_wait_te_tx_cmd(struct dsi_panel *panel, u32 pwm_switch_cmd, u32 pwm_switch_state_last);
 int oplus_hbm_pwm_state(struct dsi_panel *panel, bool hbm_state);
+int get_backlight_hpwm_onepulse_normal_buf_size(void);
+int get_backlight_hpwm_onepulse_max_buf_size(void);
 #endif

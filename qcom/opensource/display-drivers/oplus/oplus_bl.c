@@ -20,12 +20,17 @@ static int enable_hbm_exit_dly_on_flags = 0;
 static int backlight_hpwm_onepulse_normal_buf[];
 static int backlight_hpwm_onepulse_max_buf[];
 int hpwm_onepulse_bl_lvl = 0;
+int hpwm_onepulse_normal_buf_size = 0;
+int hpwm_onepulse_max_buf_size = 0;
 
 int oplus_panel_parse_bl_config(struct dsi_panel *panel)
 {
 	int rc = 0;
 	u32 val = 0;
 	struct dsi_parser_utils *utils = &panel->utils;
+
+	hpwm_onepulse_normal_buf_size = get_backlight_hpwm_onepulse_normal_buf_size();
+	hpwm_onepulse_max_buf_size = get_backlight_hpwm_onepulse_max_buf_size();
 
 #if defined(CONFIG_PXLW_IRIS)
 	if (iris_is_chip_supported() && (!strcmp(panel->type, "secondary"))) {
@@ -203,6 +208,7 @@ int oplus_panel_global_hbm_mapping(struct dsi_panel *panel, u32 *backlight_level
 	u32 bl_lvl = *backlight_level;
 	u32 global_hbm_switch_cmd = 0;
 	bool global_hbm_dly = false;
+	int pwm_level = 0;
 
 	if (bl_lvl > panel->bl_config.bl_normal_max_level) {
 		if (!oplus_global_hbm_flags) {
@@ -264,9 +270,17 @@ int oplus_panel_global_hbm_mapping(struct dsi_panel *panel, u32 *backlight_level
 			bl_lvl = panel->bl_config.pwm_turbo_gamma_bl_threshold +1;
 		} else if (bl_lvl >= panel->bl_config.hpwm_onepulse_bl_threshold
 				&& bl_lvl <= panel->bl_config.brightness_normal_max_level) {
-			bl_lvl = backlight_hpwm_onepulse_normal_buf[bl_lvl - panel->bl_config.hpwm_onepulse_bl_threshold];
+			pwm_level = bl_lvl - panel->bl_config.hpwm_onepulse_bl_threshold;
+			if(pwm_level >= hpwm_onepulse_normal_buf_size) {
+				pwm_level = hpwm_onepulse_normal_buf_size - 1;
+			}
+			bl_lvl = backlight_hpwm_onepulse_normal_buf[pwm_level];
 		} else if (bl_lvl > panel->bl_config.brightness_normal_max_level) {
-			bl_lvl = backlight_hpwm_onepulse_max_buf[bl_lvl - panel->bl_config.brightness_normal_max_level - 1];
+			pwm_level = bl_lvl - panel->bl_config.brightness_normal_max_level - 1;
+			if(pwm_level >= hpwm_onepulse_max_buf_size) {
+				pwm_level = hpwm_onepulse_max_buf_size - 1;
+			}
+			bl_lvl = backlight_hpwm_onepulse_max_buf[pwm_level];
 		}
 	}
 	hpwm_onepulse_bl_lvl = bl_lvl;
@@ -565,4 +579,14 @@ static int backlight_hpwm_onepulse_max_buf[] = {
 	3964, 3965, 3966, 3967, 3968, 3969, 3969, 3970, 3971, 3973, 3974, 3974, 3975, 3976, 3977, 3978, 3979, 3980, 3981, 3982, \
 	3983, 3984, 3985, 3986, 3987, 3988, 3989, 3990, 3991, 3992, 3993, 3994, 3995, 3996, 3997, 3998, 3999, 4000, 4001, 4002
 };
+
+int get_backlight_hpwm_onepulse_normal_buf_size(void)
+{
+	return sizeof(backlight_hpwm_onepulse_normal_buf)/sizeof(backlight_hpwm_onepulse_normal_buf[0]);
+}
+
+int get_backlight_hpwm_onepulse_max_buf_size(void)
+{
+	return sizeof(backlight_hpwm_onepulse_max_buf)/sizeof(backlight_hpwm_onepulse_max_buf[0]);
+}
 /* end for pwm onepulse feature */

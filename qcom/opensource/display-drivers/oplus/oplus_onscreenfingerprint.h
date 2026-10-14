@@ -268,5 +268,6 @@ ssize_t oplus_ofp_set_longrui_aod_mode_attr(struct kobject *obj,
 	struct kobj_attribute *attr, const char *buf, size_t count);
 ssize_t oplus_ofp_get_longrui_aod_config_attr(struct kobject *obj,
 	struct kobj_attribute *attr, char *buf);
-
+bool oplus_ofp_full_screen_aod_mode_is_enabled(void);
+bool oplus_ofp_mirror_to_the_end_aod_mode_is_enabled(void);
 #endif /*_OPLUS_ONSCREENFINGERPRINT_H_*/
