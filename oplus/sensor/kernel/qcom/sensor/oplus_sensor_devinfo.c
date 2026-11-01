@@ -317,10 +317,7 @@ static void parse_light_sensor_dts(struct sensor_hw* hw, struct device_node *ch_
 		"normalization_value",
 		"use_lb_algo",
 		"para-matrix",
-		"als_ratio_type",
-		"sup_remote_proc",
-		"als_polling_timer",
-		"is_distinguish_screens"
+		"als_ratio_type"
 	};
 
 	char *light_para[] = {
@@ -346,19 +343,8 @@ static void parse_light_sensor_dts(struct sensor_hw* hw, struct device_node *ch_
 		"ir_coef_val_1",
 		"ir_coef_val_2",
 		"ir_coef_val_3",
-		"ir_coef_val_4",
+		"ir_coef_val_4"
 		/*lb para end*/
-		"polling_use_majority",
-		"k43",
-		"k51",
-		"k52",
-		"k53",
-		"k61",
-		"k62",
-		"k63",
-		"lcd_name",
-		"coef_f",
-		"lcd_als_ratio_type"
 	};
 	for (di = 0; di < ARRAY_SIZE(als_feature); di++) {
 		rc = of_property_read_u32(ch_node, als_feature[di], &value);
