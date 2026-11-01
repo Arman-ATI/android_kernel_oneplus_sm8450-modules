@@ -3132,6 +3132,14 @@ static int swrm_master_init(struct swr_mstr_ctrl *swrm)
 		value[len++] = swrm->ee_val;
 	}
 
+#ifndef CONFIG_SWRM_VER_2P0
+	reg[len] = SWRM_MCP_BUS_CTRL;
+	if (swrm->version < SWRM_VERSION_1_7)
+		value[len++] = 0x2;
+	else
+		value[len++] = 0x2 << swrm->ee_val;
+#endif
+
 	if (swrm->master_id == MASTER_ID_BT) {
 		/* Enable self_gen_frame_sync. */
 		reg[len] = SWRM_SELF_GENERATE_FRAME_SYNC;
@@ -3934,7 +3942,9 @@ static int swrm_runtime_resume(struct device *dev)
 			swr_master_write(swrm,
 				SWRM_CLK_CTRL(swrm->ee_val), 0x01);
 #else
-			swr_master_write(swrm, SWRM_MCP_BUS_CTRL, 0x2);
+			swr_master_write(swrm, SWRM_MCP_BUS_CTRL,
+				swrm->version < SWRM_VERSION_1_7 ?
+				0x2 : 0x2 << swrm->ee_val);
 #endif
 			/* clear and enable bus clash interrupt */
 			swr_master_write(swrm,
