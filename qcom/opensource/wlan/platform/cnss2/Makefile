@@ -9,6 +9,7 @@ include $(WLAN_PLATFORM_ROOT)/cnss2/waipio_gki_defconfig
 endif
 
 ccflags-y += -Wmissing-prototypes
+ccflags-y += -DOPLUS_FEATURE_WIFI_MAC
 
 ifeq ($(CONFIG_CNSS_OUT_OF_TREE),y)
 ccflags-y += -I$(WLAN_PLATFORM_ROOT)/cnss_utils
