@@ -1456,7 +1456,12 @@ static void tp_fw_update_work(struct work_struct *work)
                     strlcat(fw_name_fae, postfix, MAX_FW_NAME_LENGTH);
                     strlcat(fw_name_fae, p_node, MAX_FW_NAME_LENGTH);
                     TPD_INFO("fw_name_fae is %s\n", fw_name_fae);
-                    ret = request_firmware(&fw, fw_name_fae, ts->dev);
+                    /*
+                     * FAE images are optional. Avoid the userspace
+                     * firmware fallback when the image is absent.
+                     */
+                    ret = request_firmware_direct(&fw, fw_name_fae,
+                                     ts->dev);
                     if (!ret)
                         break;
                 } else {
